@@ -14,12 +14,12 @@ TBitField::TBitField(int len)
 {
 	if (len>0){
 		BitLen=len;
-		MemLen=(len+sizeof(TELEM)*8-1)>>(int)(log((float)sizeof(TELEM)*8)/log(2.0f));
+		MemLen=(len+sizeof(TELEM)*8-1) / (sizeof(TELEM) * 8);
 		pMem=new TELEM[MemLen];
 		if (pMem!=NULL)
 			for(int i=0; i<MemLen; i++)
 				pMem[i]=0;
-	} else throw 1;
+	} else throw std::logic_error("");
 }
 
 TBitField::TBitField(const TBitField &bf) // конструктор копирования
@@ -40,7 +40,7 @@ TBitField::~TBitField()
 
 int TBitField::GetMemIndex(const int n) const // индекс Мем для бита n
 {
-	return n>>(int)(log((float)sizeof(TELEM)*8)/log(2.0f));
+	return (n / (sizeof(TELEM) * 8));
 }
 
 TELEM TBitField::GetMemMask(const int n) const // битовая маска для бита n
@@ -60,7 +60,7 @@ void TBitField::SetBit(const int n) // установить бит
 	if ((n>-1) && (n<BitLen))
 		pMem[GetMemIndex(n)]|=GetMemMask(n);
 	else
-		throw 1;
+		throw std::logic_error("");
 }
 
 void TBitField::ClrBit(const int n) // очистить бит
@@ -68,7 +68,7 @@ void TBitField::ClrBit(const int n) // очистить бит
 		if ((n>-1) && (n<BitLen))
 			pMem[GetMemIndex(n)]&=~GetMemMask(n);
 		else 
-			throw 1;
+			throw std::logic_error("");
 }
 
 int TBitField::GetBit(const int n) const // получить значение бита
@@ -76,7 +76,7 @@ int TBitField::GetBit(const int n) const // получить значение б
 	if ((n>-1) && (n<BitLen))
 		return pMem[GetMemIndex(n)]&GetMemMask(n);
 	else
-		throw 1;
+		throw std::logic_error("");
 }
 
 // битовые операции
@@ -165,7 +165,6 @@ istream &operator>>(istream &istr, TBitField &bf) // ввод
 {
 	int i=0;
 	char ch;
-    do {istr>>ch;} while (ch!=' ');
 	while (1) {istr>>ch;
 	if (ch=='0') bf.ClrBit(i++);
 	else if (ch=='1') bf.SetBit(i++); else break;}
